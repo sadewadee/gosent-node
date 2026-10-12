@@ -1,0 +1,54 @@
+name: Release
+
+# Publishes @gosent/node to npm when a tag such as v0.1.0 is pushed.
+#
+# Today it authenticates with the NPM_TOKEN secret of the "npm" environment.
+# To switch to npm Trusted Publishing (OIDC, no long-lived token) later:
+#   1. Once the package exists on npm, open its settings on npmjs.com and add
+#      a trusted publisher: GitHub Actions, repository sadewadee/gosent-node,
+#      workflow release.yml, environment npm.
+#   2. Make sure the npm CLI used below is 11.5.1 or newer (Node 24 ships one;
+#      otherwise add a step that runs `npm install -g npm@latest`).
+#   3. Remove the NODE_AUTH_TOKEN line from the publish step and delete the
+#      NPM_TOKEN secret. The id-token: write permission is already granted.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    environment: npm
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Check that the tag matches package.json
+        run: |
+          expected="v$(node -p "require('./package.json').version")"
+          if [ "$GITHUB_REF_NAME" != "$expected" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $expected"
+            exit 1
+          fi
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+
+      - name: Publish
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

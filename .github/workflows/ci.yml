@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [18, 20, 22, 24]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: npm pack --dry-run
+
+      - name: Check the packed file list
+        run: |
+          npm pack --dry-run --json > pack.json
+          node --input-type=module <<'EOF'
+          import { readFileSync } from "node:fs";
+          const [pack] = JSON.parse(readFileSync("pack.json", "utf8"));
+          const files = pack.files.map((f) => f.path).sort();
+          const allowed = (p) =>
+            p.startsWith("dist/") || ["package.json", "README.md", "LICENSE"].includes(p);
+          const required = ["package.json", "README.md", "LICENSE", "dist/index.js", "dist/index.d.ts"];
+          const unexpected = files.filter((p) => !allowed(p));
+          const missing = required.filter((p) => !files.includes(p));
+          console.log(files.join("\n"));
+          if (unexpected.length || missing.length) {
+            console.error(`unexpected: ${unexpected.join(", ") || "none"}`);
+            console.error(`missing: ${missing.join(", ") || "none"}`);
+            process.exit(1);
+          }
+          EOF
