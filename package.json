@@ -1,0 +1,28 @@
+{
+  "name": "@gosent/node",
+  "version": "0.1.0",
+  "description": "Gosent Send API client for Node.js: first email in a few lines.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test test/*.test.mjs"
+  },
+  "keywords": ["email", "transactional", "gosent", "send"],
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "typescript": "^5.4.0"
+  }
+}
