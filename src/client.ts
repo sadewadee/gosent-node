@@ -13,7 +13,7 @@ export type GosentOptions = {
 };
 
 /** Send calls for `/v3/email/*`. Every result is `{ data }` or `{ error }` and
- *  never throws for an API error, mirroring Resend's client ergonomics. */
+ *  never throws for an API error. */
 export class Emails {
   constructor(
     private readonly apiKey: string,

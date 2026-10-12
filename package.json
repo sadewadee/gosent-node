@@ -2,6 +2,16 @@
   "name": "@gosent/node",
   "version": "0.1.0",
   "description": "Gosent Send API client for Node.js: first email in a few lines.",
+  "license": "MIT",
+  "author": "Gosent <support@gosent.net>",
+  "homepage": "https://gosent.net/docs/sdks",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sadewadee/gosent-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sadewadee/gosent-node/issues"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -11,16 +21,21 @@
       "import": "./dist/index.js"
     }
   },
+  "sideEffects": false,
   "files": ["dist"],
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "node --test test/*.test.mjs"
+    "test": "node --test test/*.test.mjs",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   },
   "keywords": ["email", "transactional", "gosent", "send"],
-  "license": "UNLICENSED",
   "devDependencies": {
     "@types/node": "^18.19.0",
     "typescript": "^5.4.0"
