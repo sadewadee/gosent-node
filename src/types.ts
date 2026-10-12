@@ -1,4 +1,4 @@
-/** One refused recipient (contract §4.1). */
+/** One refused recipient. */
 export type FailureDetail = {
   recipient: string;
   reason: string;
@@ -16,7 +16,7 @@ export type DataResult = {
 };
 
 /** Non-2xx (or network) failure, using the envelope's `error_code` minus the
- *  `E_ApiResponseCodes.` prefix the server sends (contract §4.3). */
+ *  `E_ApiResponseCodes.` prefix the server sends. */
 export type ApiErrorShape = {
   statusCode: number;
   code: string;
@@ -38,7 +38,7 @@ export type AttachmentInput = {
 
 /** Everything `emails.send` accepts. Header-rejecting fields never reach the
  *  API: `replyTo` becomes a `Reply-To` custom header, `headers` become
- *  `custom_headers` (both contract §4.1 semantics are built here). */
+ *  `custom_headers`. */
 export type SendParams = {
   from: string;
   to: string | string[];
@@ -52,7 +52,7 @@ export type SendParams = {
   attachments?: AttachmentInput[];
 };
 
-/** The wire object the API expects, after mapping (contract §4.1). */
+/** The wire object the API expects, after mapping. */
 export type SendPayload = {
   sender: string;
   to: string[];

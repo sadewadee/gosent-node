@@ -41,7 +41,7 @@ function bytesToB64(bytes: Uint8Array): string {
 }
 
 /** A string is UTF-8 text; a Uint8Array/Buffer is raw bytes. Both go to the API
- *  as base64 (`fileblob`, contract §4.1). */
+ *  as base64 (`fileblob`). */
 function normalizeAttachment(
   a: AttachmentInput
 ): { filename: string; fileblob: string; mimetype: string } {
@@ -59,8 +59,8 @@ function normalizeAttachment(
   return { filename, fileblob: blob, mimetype };
 }
 
-// Mirrors the server (apps/api/app/send_api.py FORBIDDEN_HEADERS/FORBIDDEN_PREFIXES,
-// contract §4.1). Failing here is friendlier than a 400, but the API is the authority.
+// Mirrors the headers the Send API refuses. Failing here is friendlier than a 400,
+// but the API is the authority.
 const FORBIDDEN_HEADERS = new Set([
   "from", "to", "cc", "bcc", "sender", "return-path", "received", "dkim-signature",
   "message-id", "date", "mime-version",
@@ -86,8 +86,8 @@ function buildCustomHeaders(params: SendParams): { header: string; value: string
   return out;
 }
 
-/** Map the friendly `from`/`to`/`html`/... shapes into the SMTP2GO wire (contract
- *  §4.1). Public so callers can inspect what would be sent; used by send(). */
+/** Map the friendly `from`/`to`/`html`/... shapes into the Send API wire format.
+ *  Public so callers can inspect what would be sent; used by send(). */
 export function mapParams(params: SendParams): SendPayload {
   const from = asStr(params.from);
   const to = toArray(params.to);

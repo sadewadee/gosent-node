@@ -1,5 +1,5 @@
 // Unit tests for @gosent/node against a loopback stub that speaks the Send API
-// envelope (docs/sending-contract.md §4). No network, no Postgres.
+// envelope. No network.
 import test from "node:test";
 import assert from "node:assert/strict";
 import http from "node:http";
