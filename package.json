@@ -28,7 +28,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "node --test test/*.test.mjs",
+    "test": "tsc -p test/tsconfig.json && node --test test/*.test.mjs",
     "prepublishOnly": "npm run build && npm test"
   },
   "publishConfig": {

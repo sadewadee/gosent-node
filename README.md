@@ -30,7 +30,7 @@ const { data, error } = await gosent.emails.send({
 
 if (error) {
   console.error(error.code, error.message);
-} else if (data) {
+} else {
   console.log("Sent", data.emailId);
 }
 ```
@@ -135,7 +135,9 @@ const { data, error } = await gosent.emails.sendMime(mime);
 
 ## Responses
 
-`send` and `sendMime` resolve to `{ data, error }`. Exactly one of the two is set.
+`send` and `sendMime` resolve to `{ data, error }`. Exactly one of the two is set,
+and the TypeScript type says so: once you have checked `error`, `data` is known to be
+set (and the other way around).
 
 On success, `data` holds the outcome per recipient:
 
@@ -183,7 +185,7 @@ if (error) {
   } else {
     console.error(error.statusCode, error.code, error.message, error.requestId);
   }
-} else if (data && data.failed > 0) {
+} else if (data.failed > 0) {
   console.warn("Some recipients were refused:", data.failureDetails);
 }
 ```
@@ -264,8 +266,14 @@ const params: SendParams = {
 };
 
 const result: SendResponse = await gosent.emails.send(params);
-const data: DataResult | undefined = result.data;
-const error: ApiErrorShape | undefined = result.error;
+
+if (result.error) {
+  const error: ApiErrorShape = result.error;
+  console.error(error.code, error.message);
+} else {
+  const data: DataResult = result.data;
+  console.log("Sent", data.emailId);
+}
 ```
 
 Also exported: `AttachmentInput`, `FailureDetail`, `GosentOptions`, the `VERSION`

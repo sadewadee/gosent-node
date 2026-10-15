@@ -16,9 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `subject`, `html`, `text`, `replyTo`, `headers` and `attachments`.
 - `gosent.emails.sendMime()` for `POST /v3/email/mime` with a pre-built MIME message.
 - Every call resolves to `{ data, error }` and never throws for an API or network
-  error. Error codes from the API are returned without the `E_ApiResponseCodes.`
-  prefix, together with the request id, the `Retry-After` header and field
-  validation errors when present.
+  error. Exactly one of the two is set, and the `SendResponse` type is a union, so
+  TypeScript narrows `data` once `error` is checked. Error codes from the API are
+  returned without the `E_ApiResponseCodes.` prefix, together with the request id,
+  the `Retry-After` header and field validation errors when present.
 - Attachments from a UTF-8 string or raw bytes (`Uint8Array` or `Buffer`), base64
   encoded by the SDK, with a default content type based on the file extension.
 - Headers that must be set through top-level fields (`From`, `To`, `Content-*`,
