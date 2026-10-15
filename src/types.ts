@@ -26,7 +26,10 @@ export type ApiErrorShape = {
   fieldErrors?: { fieldName?: string; message?: string };
 };
 
-export type SendResponse = { data?: DataResult; error?: ApiErrorShape };
+/** Exactly one of `data` and `error` is set, so checking one narrows the other. */
+export type SendResponse =
+  | { data: DataResult; error?: undefined }
+  | { data?: undefined; error: ApiErrorShape };
 
 /** A single file to attach. A `string` is UTF-8 text and is base64-encoded; a
  *  `Uint8Array`/`Buffer` is raw bytes and is base64-encoded as-is. */
